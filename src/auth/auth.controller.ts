@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { RegisterUserDto } from 'src/dto/register-user.dto';
 import { CurrentUser } from 'src/model/current-user';
+import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 
 
@@ -23,7 +24,13 @@ export class AuthController {
             token,
             refresh_token: ''
         }
-        res.cookie('auth-cookie', secretData, {httpOnly: true, secure: true})
+        res.cookie('auth-cookie', secretData, {httpOnly: true}) //secure: true
         return { msg: 'success' }
+    }
+
+    @Get('/authentication')
+    @UseGuards(AuthGuard('jwt'))
+    async auth(@Req() req) {
+        return ['Hello', 'World!!']
     }
 }

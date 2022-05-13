@@ -4,6 +4,8 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt'
 import { CurrentUser } from 'src/model/current-user';
 import { JwtService } from '@nestjs/jwt';
+import * as randomToken from 'rand-token'
+import * as moment from 'moment'
 
 
 @Injectable()
@@ -33,19 +35,23 @@ export class AuthService {
 
 //validation
     async usersValidation(email: string, password: string): Promise<CurrentUser> {
-        const user = await this.userService.findByEmail(email)
-        const passwordEquals = await bcrypt.compare(password, user.password)
-        if(user && passwordEquals) {
-            let currentUser = new CurrentUser()
-            currentUser.id = user.id
-            currentUser.first_name = user.first_name
-            currentUser.company = user.first_name
-            currentUser.company_role = user.company
-            currentUser.email = user.email
-    
-            return currentUser
-        } else {
-            throw new UnauthorizedException({message: 'Incorrect email or password...'})
+        try {
+            const user = await this.userService.findByEmail(email)
+            const passwordEquals = await bcrypt.compare(password, user.password)
+            if(user && passwordEquals) {
+                let currentUser = new CurrentUser()
+                currentUser.id = user.id
+                currentUser.first_name = user.first_name
+                currentUser.company = user.first_name
+                currentUser.company_role = user.company
+                currentUser.email = user.email
+        
+                return currentUser
+            } else {
+                throw new UnauthorizedException({message: 'Incorrect email or password...'})
+            }
+        } catch(err) {
+            throw new UnauthorizedException({message: 'Incorrect email or password...'}, err)
         }
     }
 }

@@ -7,6 +7,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from 'src/auth/auth.module';
 import { LocalStrategyService } from './local-strategy/local-strategy.service';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategyService } from './jwt-strategy/jwt-strategy.service';
 
 
 @Module({
@@ -15,11 +16,12 @@ import { PassportModule } from '@nestjs/passport';
     forwardRef(() => AuthModule),
     PassportModule
   ],
-  providers: [UsersService, LocalStrategyService],
+  providers: [UsersService, LocalStrategyService, JwtStrategyService],
   controllers: [UsersController],
   exports: [
     UsersService,
-    LocalStrategyService
+    LocalStrategyService,
+    JwtStrategyService
   ]
 })
 export class UsersModule {}
