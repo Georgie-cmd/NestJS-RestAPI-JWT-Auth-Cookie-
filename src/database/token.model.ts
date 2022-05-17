@@ -1,4 +1,4 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasOne, Model, Table } from "sequelize-typescript";
 import { User } from "./user.model";
 
 
@@ -14,9 +14,8 @@ export class Token extends Model<Token> {
     refresh_token_exp: string
 
     @ForeignKey(() => User)
-    @Column
-    userId: number;
+    userId: number
    
     @BelongsTo(() => User)
-    user: User;
+    user: User
 }

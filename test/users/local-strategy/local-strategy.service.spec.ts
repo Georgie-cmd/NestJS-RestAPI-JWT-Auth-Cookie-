@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LocalStrategyService } from '../../../src/users/local-strategy/local-strategy.service';
+import { LocalStrategyService } from '../../../src/auth/strategies/local-strategy/local-strategy.service';
 
 describe('LocalStrategyService', () => {
   let service: LocalStrategyService;

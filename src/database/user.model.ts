@@ -26,5 +26,5 @@ export class User extends Model<User> {
     password: string
 
     @HasOne(() => Token)
-    tokenId: Token;
+    tokenId: Token[]
 }
