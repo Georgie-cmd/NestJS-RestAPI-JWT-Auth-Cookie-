@@ -6,4 +6,6 @@ export class CreateUserDto {
     company_role: string
     email: string
     password: string
+    refresh_token: string
+    refresh_token_exp: string
 }

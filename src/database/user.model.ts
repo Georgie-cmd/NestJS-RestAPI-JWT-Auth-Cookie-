@@ -1,5 +1,4 @@
-import { Column, DataType, HasOne, Model, Table } from "sequelize-typescript";
-import { Token } from "./token.model";
+import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 
 @Table({tableName: 'users'})
@@ -25,6 +24,9 @@ export class User extends Model<User> {
     @Column({type: DataType.STRING, allowNull: false})
     password: string
 
-    @HasOne(() => Token)
-    tokenId: Token[]
+    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    refresh_token: string
+
+    @Column({type: DataType.STRING, allowNull: false})
+    refresh_token_exp: string
 }

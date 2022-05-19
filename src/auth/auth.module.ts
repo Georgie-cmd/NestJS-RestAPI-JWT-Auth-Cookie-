@@ -6,7 +6,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Token } from 'src/database/token.model';
 import { LocalStrategyService } from './strategies/local-strategy/local-strategy.service';
 import { JwtStrategyService } from './strategies/jwt-strategy/jwt-strategy.service';
 import { User } from 'src/database/user.model';
@@ -18,7 +17,7 @@ import { RefreshStrategyService } from './strategies/refresh-strategy/refresh-st
     ConfigModule.forRoot({
       envFilePath: 'development.env'
     }),
-    SequelizeModule.forFeature([Token, User]),
+    SequelizeModule.forFeature([User]),
     forwardRef(() => UsersModule),
     PassportModule,
     JwtModule.register({

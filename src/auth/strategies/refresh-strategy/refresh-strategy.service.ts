@@ -9,34 +9,32 @@ export class RefreshStrategyService extends PassportStrategy(Strategy, 'refresh'
     constructor(private authService: AuthService){
         super({
             ignoreExpiration: true,
-            passReqToCallback:true,
+            passReqToCallback: true,
             secretOrKey: process.env.SECRET_KEY,
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request) => {
-                    let data = request?.cookies["auth-cookie"]
-                    if(!data){
-                        return null
-                    }
-                return data.token
+                    let secretdata = request?.cookies["auth-cookie"]
+                    return secretdata?.token
                 }
             ])
         })
     }
 
-    async validate(req: Request, payload:any){
+    async validate(req: Request, payload: any){
         if(!payload){
-            throw new BadRequestException('invalid jwt token');
-        }
-        
-        let data = req?.cookies['auth-cookie'];
-        if(!data?.refresh_token){
-            throw new BadRequestException('invalid refresh token');
-        }
-        let user = await this.authService.validateRefreshToken(payload.email, data.refresh_token);
-        if(!user){
-            throw new BadRequestException('token expired');
+            throw new BadRequestException('Invalid jwt token...')
         }
 
+        let data = req?.cookies['auth-cookie']
+        if(!data?.refresh_token){
+            throw new BadRequestException('Invalid refresh token...')
+        }
+        
+        let user = await this.authService.validateRefreshToken(payload.email, data.refresh_token)
+        if(!user){
+            throw new BadRequestException('Token expired...')
+        }
+ 
         return user
     }
 }
