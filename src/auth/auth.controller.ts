@@ -4,11 +4,16 @@ import { Response } from 'express';
 import { RegisterUserDto } from 'src/dto/register-user.dto';
 import { CurrentUser } from 'src/model/current-user';
 import { AuthService } from './auth.service';
+import { TokenService } from './token.service';
 
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private tokenService: TokenService
+    ) {}
+
 
     @Post('/registration')
     async registration(@Body() registerDto: RegisterUserDto) {
@@ -18,8 +23,8 @@ export class AuthController {
     @Post('/login')
     @UseGuards(AuthGuard('local'))
     async login(@Req() req, @Res({passthrough: true}) res: Response) {
-        let token = await this.authService.getJwtToken((req.user as CurrentUser))
-        let refresh_token = await this.authService.getRefreshToken(req.user.id)
+        let token = await this.tokenService.getJwtToken((req.user as CurrentUser))
+        let refresh_token = await this.tokenService.getRefreshToken(req.user.id)
         let secretData = {
             token,
             refresh_token: refresh_token
@@ -37,8 +42,8 @@ export class AuthController {
     @Get('/refresh-token')
     @UseGuards(AuthGuard('refresh'))
     async refreshTokens(@Req() req, @Res({ passthrough: true }) res: Response) {
-        const token = await this.authService.getJwtToken(req.user as CurrentUser)
-        const refreshToken = await this.authService.getRefreshToken(req.user.id)
+        const token = await this.tokenService.getJwtToken(req.user as CurrentUser)
+        const refreshToken = await this.tokenService.getRefreshToken(req.user.id)
         const secretData = {
           token,
           refresh_token: refreshToken
@@ -46,5 +51,12 @@ export class AuthController {
      
         res.cookie('auth-cookie', secretData, { httpOnly: true })
         return {msg:'success'}
+    }
+
+    @Post('/logout')
+    @UseGuards(AuthGuard('refresh'))
+    async tokenLogout(@Req() req, @Res({ passthrough: true }) res: Response) {
+        await this.tokenService.removeRefreshToken(req.user.id)
+        res.clearCookie('auth-cookie', null)
     }
 }

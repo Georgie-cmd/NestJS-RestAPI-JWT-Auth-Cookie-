@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser())
   await app.listen(PORT, () => {
-    console.log(`Server has been started on port: ${PORT}`)
+    console.log('\x1b[36m%s\x1b[0m', `Server has been started on port: ${PORT}`)
   });
 }
 bootstrap();

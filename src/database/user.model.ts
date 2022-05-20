@@ -24,7 +24,7 @@ export class User extends Model<User> {
     @Column({type: DataType.STRING, allowNull: false})
     password: string
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    @Column({type: DataType.STRING, unique: true})
     refresh_token: string
 
     @Column({type: DataType.STRING, allowNull: false})

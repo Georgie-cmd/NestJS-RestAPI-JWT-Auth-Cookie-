@@ -10,6 +10,7 @@ import { LocalStrategyService } from './strategies/local-strategy/local-strategy
 import { JwtStrategyService } from './strategies/jwt-strategy/jwt-strategy.service';
 import { User } from 'src/database/user.model';
 import { RefreshStrategyService } from './strategies/refresh-strategy/refresh-strategy.service';
+import { TokenService } from './token.service';
 
 
 @Module({
@@ -23,15 +24,16 @@ import { RefreshStrategyService } from './strategies/refresh-strategy/refresh-st
     JwtModule.register({
       secret: process.env.SECRET_KEY,
       signOptions: {
-        expiresIn: 30,
+        expiresIn: process.env.TOKEN_EXPIRATION,
       }
     }),
     PassportModule
   ],
-  providers: [AuthService, LocalStrategyService, JwtStrategyService, RefreshStrategyService],
+  providers: [AuthService, TokenService, LocalStrategyService, JwtStrategyService, RefreshStrategyService],
   controllers: [AuthController],
   exports: [
     AuthService,
+    TokenService,
     LocalStrategyService, 
     JwtStrategyService,
     RefreshStrategyService

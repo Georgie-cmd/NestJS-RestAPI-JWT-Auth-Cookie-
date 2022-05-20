@@ -3,10 +3,14 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { AuthService } from "src/auth/auth.service";
+import { TokenService } from "src/auth/token.service";
+
 
 @Injectable()
 export class RefreshStrategyService extends PassportStrategy(Strategy, 'refresh') {
-    constructor(private authService: AuthService){
+    constructor(
+        private tokenService: TokenService
+    ){
         super({
             ignoreExpiration: true,
             passReqToCallback: true,
@@ -30,7 +34,7 @@ export class RefreshStrategyService extends PassportStrategy(Strategy, 'refresh'
             throw new BadRequestException('Invalid refresh token...')
         }
         
-        let user = await this.authService.validateRefreshToken(payload.email, data.refresh_token)
+        let user = await this.tokenService.validateRefreshToken(payload.email, data.refresh_token)
         if(!user){
             throw new BadRequestException('Token expired...')
         }
