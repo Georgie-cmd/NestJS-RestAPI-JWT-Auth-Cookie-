@@ -1,27 +1,37 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Response } from 'express';
 import { UsersService } from './users.service';
+import { TokenService } from 'src/auth/token.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService) {}
+    constructor(
+        private userService: UsersService,
+        private tokenService: TokenService
+    ) {}
 
-    @Get('/hello')
-    getSmth(): string {
-        return this.userService.getSmth()
-    }
-    
-    @Get('/get-user-by-id/:id')
-    getOneById(@Body() id: number): any {
-        return this.userService.findById(id)
+    @Post('/password-recover')
+    async passRecover() {
+
     }
 
-    @Get('/get-user-by-id/:email')
-    getOneByEmail(@Body() email: string): any {
-        return this.userService.findByEmail(email)
+    @Post('/email-recover')
+    async emailRecover() {
+
     }
 
-    @Get('/get-user-by-id/:company')
-    getOneByCompany(@Body() company: string): any {
-        return this.userService.findByEmail(company)
+    @Post('/data-updating')
+    async dataUpdating() {
+
+    }
+
+    @Delete('/account-deleting')
+    @UseGuards(AuthGuard('refresh'))
+    async deleteAccount(@Req() req, @Res({ passthrough: true }) res: Response) {
+        await this.tokenService.removeRefreshToken(req.user.id)
+        res.clearCookie('auth-cookie', null)
+        await this.userService.deleteUser(req.user.email)
+        return {msg: 'success'}
     }
 }

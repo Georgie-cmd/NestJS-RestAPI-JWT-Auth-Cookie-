@@ -8,10 +8,6 @@ import { InjectModel } from '@nestjs/sequelize';
 export class UsersService {
     constructor(@InjectModel(User) private userRepository: typeof User) {}
 
-    getSmth(): string {
-        return 'Hello world!'
-    }
-
 //searching
     async findByEmail(email: string): Promise<User> {
         return await this.userRepository.findOne({where: {email}})
@@ -25,8 +21,15 @@ export class UsersService {
         return await this.userRepository.findOne({where: {company}})    
     }
 
+
 //creating
     async createUser(userDto: CreateUserDto): Promise<CreateUserDto> {
         return await this.userRepository.create(userDto)
+    }
+
+
+//deleting
+    async deleteUser(email: string): Promise<any> {
+        return await this.userRepository.destroy({where: {email: email}})
     }
 }

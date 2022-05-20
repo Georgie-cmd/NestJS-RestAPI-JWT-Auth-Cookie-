@@ -5,42 +5,36 @@ import * as bcrypt from 'bcrypt'
 import { CurrentUser } from 'src/model/current-user';
 import * as randomToken from 'rand-token'
 import * as moment from 'moment'
-import { TokenService } from './token.service';
 
 
 @Injectable()
 export class AuthService {
     constructor(
-        private userService: UsersService,
-        private tokenService: TokenService
+        private userService: UsersService
     ) {}
 
 //register
     async registration(registerDto: RegisterUserDto): Promise<any> {        
-        try {
-            const candidate = await this.userService.findByEmail(registerDto.email)
-            if(candidate) {
-                throw new HttpException('This user is already exists...', HttpStatus.BAD_REQUEST)
+        const candidate = await this.userService.findByEmail(registerDto.email)
+        if(candidate) {
+            throw new HttpException('This user is already exists...', HttpStatus.BAD_REQUEST)
+        }
+
+        if(registerDto.password !== registerDto.confirm_password) {
+            throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
+        } else {
+            const hashedPassword = await bcrypt.hash(registerDto.password, 13)
+            const userTokens = {
+                refresh_token: randomToken.generate(20),
+                refresh_token_exp: moment().day(1).format('YYYY/MM/DD')
             }
 
-            if(registerDto.password !== registerDto.confirm_password) {
-                throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
-            } else {
-                const hashedPassword = await bcrypt.hash(registerDto.password, 13)
-                const userTokens = {
-                    refresh_token: randomToken.generate(20),
-                    refresh_token_exp: moment().day(1).format('YYYY/MM/DD')
-                }
-
-                return await this.userService.createUser({
-                    ...registerDto, 
-                    password: hashedPassword, 
-                    refresh_token: userTokens.refresh_token,
-                    refresh_token_exp: userTokens.refresh_token_exp
-                })
-            }
-        } catch(err) {
-            throw new BadRequestException({message: 'Something went wrong, try again later...', err})
+            return await this.userService.createUser({
+                ...registerDto, 
+                password: hashedPassword, 
+                refresh_token: userTokens.refresh_token,
+                refresh_token_exp: userTokens.refresh_token_exp
+            })
         }
     } 
 
@@ -59,11 +53,9 @@ export class AuthService {
                 currentUser.email = user.email
         
                 return currentUser
-            } else {
-                throw new UnauthorizedException({message: 'Incorrect email or password...'})
             }
         } catch(err) {
-            throw new BadRequestException({message: 'Something went wrong, try again later...', err})
+            throw new UnauthorizedException({message: 'Incorrect email or password...'})
         }
     }
 }

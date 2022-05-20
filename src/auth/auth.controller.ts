@@ -58,5 +58,6 @@ export class AuthController {
     async tokenLogout(@Req() req, @Res({ passthrough: true }) res: Response) {
         await this.tokenService.removeRefreshToken(req.user.id)
         res.clearCookie('auth-cookie', null)
+        return {msg:'success'}
     }
 }
