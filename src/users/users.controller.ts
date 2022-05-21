@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { TokenService } from 'src/auth/token.service';
-import { PasswordRecoverDto } from 'src/dto/update-user.dto';
+import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -14,13 +14,18 @@ export class UsersController {
 
     @Put('/password-recover')
     @UseGuards(AuthGuard('refresh'))
-    async passRecover(@Body() passDto: PasswordRecoverDto) {
-        await this.userService.passRecover(passDto)
+    async passRecover(
+        @Body() passDto: PasswordRecoverDto,
+        @Req() req, @Res({ passthrough: true }) res: Response
+    ) {
+        await this.userService.passRecover(passDto, req.user.email)
         
+        res.statusCode = 200
         return {msg: 'success'}
     }
 
     @Put('/email-recover')
+    @UseGuards(AuthGuard('refresh'))
     async emailRecover() {
 
     }
