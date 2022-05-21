@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/sequelize";
 import { User } from "src/database/user.model";
-import { CurrentUser } from "src/model/current-user";
+import { CurrentUser } from "src/dto/current-user";
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 import { UsersService } from "src/users/users.service";
@@ -45,7 +45,7 @@ export class TokenService {
     async removeRefreshToken(id: string) {
         const user = await this.usersService.findById(id)
         if (!user) {
-            throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND)
+            throw new HttpException('User with this id doesn\'t exist', HttpStatus.NOT_FOUND)
         }
 
         return this.userRepository.update({

@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { TokenService } from 'src/auth/token.service';
+import { PasswordRecoverDto } from 'src/dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -11,17 +12,20 @@ export class UsersController {
         private tokenService: TokenService
     ) {}
 
-    @Post('/password-recover')
-    async passRecover() {
-
+    @Put('/password-recover')
+    @UseGuards(AuthGuard('refresh'))
+    async passRecover(@Body() passDto: PasswordRecoverDto) {
+        await this.userService.passRecover(passDto)
+        
+        return {msg: 'success'}
     }
 
-    @Post('/email-recover')
+    @Put('/email-recover')
     async emailRecover() {
 
     }
 
-    @Post('/data-updating')
+    @Put('/data-updating')
     async dataUpdating() {
 
     }
@@ -30,8 +34,9 @@ export class UsersController {
     @UseGuards(AuthGuard('refresh'))
     async deleteAccount(@Req() req, @Res({ passthrough: true }) res: Response) {
         await this.tokenService.removeRefreshToken(req.user.id)
-        res.clearCookie('auth-cookie', null)
         await this.userService.deleteUser(req.user.email)
+
+        res.clearCookie('auth-cookie', null)
         return {msg: 'success'}
     }
 }
