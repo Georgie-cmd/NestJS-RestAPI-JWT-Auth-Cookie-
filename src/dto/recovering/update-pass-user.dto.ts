@@ -1,4 +1,5 @@
 export class PasswordRecoverDto {
-    password: string
+    this_password: string
+    new_password: string
     confirm_password: string
 }

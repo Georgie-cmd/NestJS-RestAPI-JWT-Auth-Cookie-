@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/
 import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { AuthService } from "src/auth/auth.service";
 import { TokenService } from "src/auth/token.service";
 
 

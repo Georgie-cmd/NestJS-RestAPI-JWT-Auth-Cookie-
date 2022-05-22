@@ -4,7 +4,6 @@ import { CreateUserDto } from 'src/dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt'
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
-import { EmailUpdate } from 'src/dto/recovering/update-email.user.dto';
 
 
 @Injectable()
@@ -39,21 +38,18 @@ export class UsersService {
 
 //password's recover
     async passRecover(passDto: PasswordRecoverDto, email: string): Promise<any> {
-        await this.userRepository.findOne({where: {email: email}})
+        const user = await this.userRepository.findOne({where: {email: email}})
 
-        if(passDto.password === passDto.confirm_password) {
-            const hashedPassword = await bcrypt.hash(passDto.password, 13)
+        const passwordEquals = await bcrypt.compare(passDto.this_password, user.password)
+        if(!passwordEquals) {
+            throw new HttpException('Incorrect password...', HttpStatus.BAD_REQUEST)
+        }
+
+        if(passDto.new_password === passDto.confirm_password) {
+            const hashedPassword = await bcrypt.hash(passDto.new_password, 13)
             return await this.userRepository.update({password: hashedPassword}, {where: {email: email}})
         } else {
             throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
         }
-    }
-
-
-//email's recover
-    async emailRecover(emailDto: EmailUpdate, id: number): Promise<any> {
-        await this.userRepository.findOne({where: {id: id}})
-
-        
     }
 }

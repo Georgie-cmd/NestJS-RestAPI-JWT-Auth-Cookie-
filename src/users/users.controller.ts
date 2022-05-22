@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { TokenService } from 'src/auth/token.service';
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
 
+
 @Controller('users')
 export class UsersController {
     constructor(
@@ -24,16 +25,12 @@ export class UsersController {
         return {msg: 'success'}
     }
 
-    @Put('/email-recover')
-    @UseGuards(AuthGuard('refresh'))
-    async emailRecover() {
-
-    }
 
     @Put('/data-updating')
     async dataUpdating() {
 
     }
+
 
     @Delete('/account-deleting')
     @UseGuards(AuthGuard('refresh'))

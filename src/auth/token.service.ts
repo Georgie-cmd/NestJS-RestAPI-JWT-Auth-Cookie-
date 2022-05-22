@@ -61,7 +61,7 @@ export class TokenService {
 //validation
     public async validateRefreshToken(email: string, refresh_token: string): Promise<CurrentUser> {
         const currentDate = moment().day(1).format('YYYY/MM/DD')
-        let user =  await this.userRepository.findOne({
+        let user = await this.userRepository.findOne({
             where: {
                 email: email, 
                 refresh_token: refresh_token, 
