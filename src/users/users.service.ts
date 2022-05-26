@@ -4,6 +4,7 @@ import { CreateUserDto } from 'src/dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt'
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
+import { CurrentData } from 'src/dto/new-data/data-update.dto';
 
 
 @Injectable()
@@ -51,5 +52,13 @@ export class UsersService {
         } else {
             throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
         }
+    }
+
+
+//users' data updating
+    async dataUpdating(currData: CurrentData, id: number): Promise<any> {
+        await this.userRepository.findOne({where: {id: id}})
+
+        return await this.userRepository.update({...currData}, {where: {id: id}})
     }
 }

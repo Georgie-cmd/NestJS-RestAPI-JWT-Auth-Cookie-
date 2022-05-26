@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { UsersService } from './users.service';
 import { TokenService } from 'src/auth/token.service';
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
+import { CurrentData } from 'src/dto/new-data/data-update.dto';
 
 
 @Controller('users')
@@ -27,8 +28,15 @@ export class UsersController {
 
 
     @Put('/data-updating')
-    async dataUpdating() {
+    @UseGuards(AuthGuard('refresh'))
+    async dataUpdating(
+        @Body() currData: CurrentData,
+        @Req() req, @Res({ passthrough: true }) res: Response
+    ) {
+        await this.userService.dataUpdating(currData, req.user.id)
 
+        res.statusCode = 200
+        return {msg: 'success'}
     }
 
 
