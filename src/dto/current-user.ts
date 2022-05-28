@@ -4,4 +4,5 @@ export class CurrentUser {
     company: string
     company_role: string
     email: string
+    ip_address: string
 }

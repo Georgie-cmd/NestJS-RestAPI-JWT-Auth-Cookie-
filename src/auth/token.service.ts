@@ -6,6 +6,7 @@ import { CurrentUser } from "src/dto/current-user";
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 import { UsersService } from "src/users/users.service";
+import * as ipify from 'ipify2'
 
 
 @Injectable()
@@ -27,6 +28,7 @@ export class TokenService {
     }
 
     public async getRefreshToken(id: number): Promise<string> {
+        const ip = await ipify.ipv4()
         const userDataToUpdate = {
             refresh_token: randomToken.generate(20),
             refresh_token_exp: moment().day(1).format('YYYY/MM/DD')
@@ -34,7 +36,8 @@ export class TokenService {
 
         await this.userRepository.update({
             refresh_token: userDataToUpdate.refresh_token,
-            refresh_token_exp: userDataToUpdate.refresh_token_exp
+            refresh_token_exp: userDataToUpdate.refresh_token_exp,
+            ip_address: ip
         }, {where: {id: id}})
 
         return userDataToUpdate.refresh_token

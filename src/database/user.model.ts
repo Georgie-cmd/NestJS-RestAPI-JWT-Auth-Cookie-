@@ -29,4 +29,7 @@ export class User extends Model<User> {
 
     @Column({type: DataType.STRING, allowNull: false})
     refresh_token_exp: string
+
+    @Column({type: DataType.STRING})
+    ip_address: string
 }

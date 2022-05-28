@@ -33,6 +33,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
+    "ipify2": "^1.1.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.3",
     "passport": "^0.5.2",

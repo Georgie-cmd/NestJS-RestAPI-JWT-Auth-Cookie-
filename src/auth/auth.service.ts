@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt'
 import { CurrentUser } from 'src/dto/current-user';
 import * as randomToken from 'rand-token'
 import * as moment from 'moment'
+import * as ipify from 'ipify2'
 
 
 @Injectable()
@@ -24,6 +25,7 @@ export class AuthService {
             throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
         } else {
             const hashedPassword = await bcrypt.hash(registerDto.password, 13)
+            const ip = await ipify.ipv4()
             const userTokens = {
                 refresh_token: randomToken.generate(20),
                 refresh_token_exp: moment().day(1).format('YYYY/MM/DD')
@@ -33,7 +35,8 @@ export class AuthService {
                 ...registerDto, 
                 password: hashedPassword, 
                 refresh_token: userTokens.refresh_token,
-                refresh_token_exp: userTokens.refresh_token_exp
+                refresh_token_exp: userTokens.refresh_token_exp,
+                ip_address: ip
             })
         }
     } 

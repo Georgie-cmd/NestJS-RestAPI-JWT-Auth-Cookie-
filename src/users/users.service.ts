@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt'
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
 import { CurrentData } from 'src/dto/new-data/data-update.dto';
+import * as ipify from 'ipify2'
 
 
 @Injectable()
@@ -48,7 +49,9 @@ export class UsersService {
 
         if(passDto.new_password === passDto.confirm_password) {
             const hashedPassword = await bcrypt.hash(passDto.new_password, 13)
-            return await this.userRepository.update({password: hashedPassword}, {where: {email: email}})
+            const ip = await ipify.ipv4()
+            
+            return await this.userRepository.update({password: hashedPassword, ip_address: ip}, {where: {email: email}})
         } else {
             throw new HttpException('Passwords are not the same..', HttpStatus.BAD_REQUEST)
         }
@@ -57,8 +60,9 @@ export class UsersService {
 
 //users' data updating
     async dataUpdating(currData: CurrentData, id: number): Promise<any> {
+        const ip = await ipify.ipv4()
         await this.userRepository.findOne({where: {id: id}})
 
-        return await this.userRepository.update({...currData}, {where: {id: id}})
+        return await this.userRepository.update({...currData, ip_address: ip}, {where: {id: id}})
     }
 }

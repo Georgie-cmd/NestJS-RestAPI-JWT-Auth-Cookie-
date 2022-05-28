@@ -1,8 +1,10 @@
-import { IsEmail, IsInt, IsString, Matches, MaxLength, MinLength } from "class-validator"
+import { IsEmail, IsInt, isIP, IsString, Matches, MaxLength, MinLength } from "class-validator"
 import { Match } from "src/decorators/match.decorator"
 
 export class RegisterUserDto {
     id: number
+
+    ip_address: string
 
     @IsString({message: 'First name must include only letters (a-zA-Z)...'})
     @MinLength(1, {message: 'First name must be at least 1 character...'})
