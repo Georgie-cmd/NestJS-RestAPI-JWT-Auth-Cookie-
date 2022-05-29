@@ -29,7 +29,13 @@ import { TokenService } from './token.service';
     }),
     PassportModule
   ],
-  providers: [AuthService, TokenService, LocalStrategyService, JwtStrategyService, RefreshStrategyService],
+  providers: [
+    AuthService, 
+    TokenService, 
+    LocalStrategyService, 
+    JwtStrategyService, 
+    RefreshStrategyService
+  ],
   controllers: [AuthController],
   exports: [
     AuthService,
