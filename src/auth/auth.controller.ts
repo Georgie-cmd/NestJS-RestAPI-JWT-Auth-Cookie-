@@ -14,23 +14,10 @@ export class AuthController {
         private tokenService: TokenService
     ) {}
 
-
-    @Post('/registration')
-    async registration(@Body() registerDto: RegisterUserDto) {
-        return this.authService.registration(registerDto)
-    }
-
-    @Post('/login')
-    @UseGuards(AuthGuard('local'))
-    async login(@Req() req, @Res({passthrough: true}) res: Response) {
-        let token = await this.tokenService.getJwtToken((req.user as CurrentUser))
-        let refresh_token = await this.tokenService.getRefreshToken(req.user.id)
-        let secretData = {
-            token,
-            refresh_token: refresh_token
-        }
-        res.cookie('auth-cookie', secretData, {httpOnly: true}) //secure: true
-        return secretData
+//GET requests
+    @Get('analytics')
+    getAnalytics() {
+      return this.authService.getAnalytics()
     }
 
     @Get('/authentication')
@@ -51,6 +38,26 @@ export class AuthController {
      
         res.cookie('auth-cookie', secretData, { httpOnly: true })
         return {msg:'success'}
+    }
+
+
+//POST requests
+    @Post('/registration')
+    async registration(@Body() registerDto: RegisterUserDto) {
+        return this.authService.registration(registerDto)
+    }
+
+    @Post('/login')
+    @UseGuards(AuthGuard('local'))
+    async login(@Req() req, @Res({passthrough: true}) res: Response) {
+        let token = await this.tokenService.getJwtToken((req.user as CurrentUser))
+        let refresh_token = await this.tokenService.getRefreshToken(req.user.id)
+        let secretData = {
+            token,
+            refresh_token: refresh_token
+        }
+        res.cookie('auth-cookie', secretData, {httpOnly: true}) //secure: true
+        return secretData
     }
 
     @Post('/logout')

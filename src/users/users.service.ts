@@ -2,10 +2,10 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { User } from 'src/database/user.model';
 import { CreateUserDto } from 'src/dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { PasswordRecoverDto } from 'src/dto/recovering/update-pass-user.dto';
 import { CurrentData } from 'src/dto/new-data/data-update.dto';
-import * as ipify from 'ipify2'
+import * as ipify from 'ipify2';
 
 
 @Injectable()

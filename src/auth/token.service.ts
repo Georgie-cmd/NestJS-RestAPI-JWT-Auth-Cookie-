@@ -6,7 +6,7 @@ import { CurrentUser } from "src/dto/current-user";
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 import { UsersService } from "src/users/users.service";
-import * as ipify from 'ipify2'
+import * as ipify from 'ipify2';
 
 
 @Injectable()
@@ -48,7 +48,7 @@ export class TokenService {
     async removeRefreshToken(id: string) {
         const user = await this.usersService.findById(id)
         if (!user) {
-            throw new HttpException('User with this id doesn\'t exist', HttpStatus.NOT_FOUND)
+            throw new HttpException('User doesn\'t exist', HttpStatus.NOT_FOUND)
         }
 
         return this.userRepository.update({

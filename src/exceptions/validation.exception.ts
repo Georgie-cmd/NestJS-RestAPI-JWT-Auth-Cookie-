@@ -5,7 +5,7 @@ export class ValidationException extends HttpException {
     messages: string
 
     constructor(response: any) {
-        super(response, HttpStatus.BAD_REQUEST);
+        super(response, HttpStatus.BAD_REQUEST)
         this.messages = response
     }
 }

@@ -11,12 +11,13 @@ import { JwtStrategyService } from './strategies/jwt-strategy/jwt-strategy.servi
 import { User } from 'src/database/user.model';
 import { RefreshStrategyService } from './strategies/refresh-strategy/refresh-strategy.service';
 import { TokenService } from './token.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: 'development.env'
+      envFilePath: '.development.env'
     }),
     SequelizeModule.forFeature([User]),
     forwardRef(() => UsersModule),
@@ -27,6 +28,12 @@ import { TokenService } from './token.service';
         expiresIn: process.env.TOKEN_EXPIRATION,
       }
     }),
+    ClientsModule.register([
+      { 
+        name: process.env.MICROSERVICE_NAME,
+        transport: Transport.TCP
+      }
+    ]),
     PassportModule
   ],
   providers: [

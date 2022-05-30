@@ -1,5 +1,6 @@
-import { IsString, Matches, MaxLength, MinLength } from "class-validator"
-import { Match } from "src/decorators/match.decorator"
+import { IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { Match } from "src/decorators/match.decorator";
+
 
 export class PasswordRecoverDto {
     @IsString()
