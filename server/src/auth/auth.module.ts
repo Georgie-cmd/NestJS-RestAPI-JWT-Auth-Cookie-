@@ -11,6 +11,7 @@ import { JwtStrategyService } from './strategies/jwt-strategy/jwt-strategy.servi
 import { User } from 'src/database/user.model';
 import { RefreshStrategyService } from './strategies/refresh-strategy/refresh-strategy.service';
 import { TokenService } from './token.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 
 @Module({
@@ -27,6 +28,12 @@ import { TokenService } from './token.service';
         expiresIn: process.env.TOKEN_EXPIRATION,
       }
     }),
+    ClientsModule.register([
+      { 
+        name: process.env.MICROSERVICE_NAME,
+        transport: Transport.TCP
+      }
+    ]),
     PassportModule
   ],
   providers: [

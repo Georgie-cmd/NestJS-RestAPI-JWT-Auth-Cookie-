@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, UnauthorizedException, BadRequestException, Inject } from '@nestjs/common';
 import { RegisterUserDto } from 'src/dto/req.body/register-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -6,12 +6,15 @@ import { CurrentUser } from 'src/dto/current-user';
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 import * as ipify from 'ipify2';
+import { ClientProxy } from '@nestjs/microservices';
+import { CreateUserEvent } from 'src/events/create-user.event';
 
 
 @Injectable()
 export class AuthService {
     constructor(
-        private userService: UsersService
+        private userService: UsersService,
+        @Inject('ANALYTICS') private readonly analyticsClient: ClientProxy
     ) {}
 
 //register
@@ -31,6 +34,12 @@ export class AuthService {
                 refresh_token_exp: moment().day(62).format('YYYY/MM/DD')
             }
 
+        //publish to analytics
+            this.analyticsClient.emit(
+                'user_created',
+                new CreateUserEvent(registerDto.email)
+            )
+
             return await this.userService.createUser({
                 ...registerDto, 
                 password: hashedPassword, 
@@ -40,6 +49,12 @@ export class AuthService {
             })
         }
     } 
+
+
+//sending to 'analytics' microservice
+getAnalytics() {
+    return this.analyticsClient.send({ cmd: 'get_analytics' }, {});
+}
 
 
 //validation
