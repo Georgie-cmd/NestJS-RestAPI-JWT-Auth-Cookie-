@@ -1,11 +1,11 @@
 import { Injectable, HttpException, HttpStatus, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { RegisterUserDto } from 'src/dto/req.body/register-user.dto';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { CurrentUser } from 'src/dto/current-user';
-import * as randomToken from 'rand-token'
-import * as moment from 'moment'
-import * as ipify from 'ipify2'
+import * as randomToken from 'rand-token';
+import * as moment from 'moment';
+import * as ipify from 'ipify2';
 
 
 @Injectable()
@@ -28,7 +28,7 @@ export class AuthService {
             const ip = await ipify.ipv4()
             const userTokens = {
                 refresh_token: randomToken.generate(20),
-                refresh_token_exp: moment().day(1).format('YYYY/MM/DD')
+                refresh_token_exp: moment().day(62).format('YYYY/MM/DD')
             }
 
             return await this.userService.createUser({
@@ -45,18 +45,22 @@ export class AuthService {
 //validation
     async usersValidation(email: string, password: string): Promise<CurrentUser> {
         const user = await this.userService.findByEmail(email)
-        const passwordEquals = await bcrypt.compare(password, user.password)
-        if(user && passwordEquals) {
-            let currentUser = new CurrentUser()
-            currentUser.id = user.id
-            currentUser.first_name = user.first_name
-            currentUser.company = user.first_name
-            currentUser.company_role = user.company
-            currentUser.email = user.email
-    
-            return currentUser
-        } else {
+        if(!user) {
             throw new HttpException('Incorrect email or password...', HttpStatus.BAD_REQUEST)
         }
+
+        const passwordEquals = await bcrypt.compare(password, user.password)
+        if(!passwordEquals) {
+            throw new HttpException('Incorrect email or password...', HttpStatus.BAD_REQUEST)
+        }
+
+        let currentUser = new CurrentUser()
+        currentUser.id = user.id
+        currentUser.first_name = user.first_name
+        currentUser.company = user.first_name
+        currentUser.company_role = user.company
+        currentUser.email = user.email
+
+        return currentUser
     }
 }

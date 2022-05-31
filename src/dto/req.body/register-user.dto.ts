@@ -1,5 +1,6 @@
-import { IsEmail, IsInt, isIP, IsString, Matches, MaxLength, MinLength } from "class-validator"
-import { Match } from "src/decorators/match.decorator"
+import { IsEmail, IsInt, isIP, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { Match } from "src/decorators/match.decorator";
+
 
 export class RegisterUserDto {
     id: number

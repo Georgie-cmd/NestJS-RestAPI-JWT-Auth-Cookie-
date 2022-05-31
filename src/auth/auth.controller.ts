@@ -5,6 +5,7 @@ import { RegisterUserDto } from 'src/dto/req.body/register-user.dto';
 import { CurrentUser } from 'src/dto/current-user';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 
 @Controller('auth')
@@ -20,6 +21,7 @@ export class AuthController {
         return this.authService.registration(registerDto)
     }
 
+    @Throttle(50, 5)
     @Post('/login')
     @UseGuards(AuthGuard('local'))
     async login(@Req() req, @Res({passthrough: true}) res: Response) {
@@ -33,12 +35,14 @@ export class AuthController {
         return secretData
     }
 
+    @Throttle(50, 5)
     @Get('/authentication')
     @UseGuards(AuthGuard('jwt'))
     async auth(@Req() req) {
         return ['Hello', 'World!!']
     }
 
+    @Throttle(50, 5)
     @Get('/refresh-token')
     @UseGuards(AuthGuard('refresh'))
     async refreshTokens(@Req() req, @Res({ passthrough: true }) res: Response) {
