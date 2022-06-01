@@ -1,0 +1,38 @@
+version: '3.3'
+
+services:
+  server:
+    image: server
+    build:
+      context: .
+    env_file:
+      - development.env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 2020:2020
+    command: npm run start:dev
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    env_file:
+      - development.env
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=georgie19111312
+      - POSTGRES_DB=auth-jwt
+    ports:
+      - 5431:5431
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:
+  postgres:
+  server:
