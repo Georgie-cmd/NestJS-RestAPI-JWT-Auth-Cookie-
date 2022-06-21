@@ -19,6 +19,9 @@ first of all: change DB_HOST to localhost in /development.env
 in both folders:
 > npm install
 
+or for current versions: 
+> npm ci 
+___
 in /microservice
 > npm run start:microservice
 
